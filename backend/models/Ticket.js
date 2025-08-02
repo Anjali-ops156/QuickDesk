@@ -1,13 +1,23 @@
+const mongoose = require('mongoose');
+
 const ticketSchema = new mongoose.Schema({
   subject: String,
   description: String,
   category: String,
-  status: { type: String, enum: ['open', 'in_progress', 'resolved', 'closed'], default: 'open' },
+  status: {
+    type: String,
+    enum: ['Open', 'In Progress', 'Resolved', 'Closed'],
+    default: 'Open'
+  },
   createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
   assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
-  attachments: [String],
-  replies: [{ sender: String, message: String, timestamp: Date }],
-  upvotes: { type: Number, default: 0 },
-  downvotes: { type: Number, default: 0 },
+  comments: [
+    {
+      user: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+      text: String,
+      date: { type: Date, default: Date.now }
+    }
+  ]
 }, { timestamps: true });
+
 module.exports = mongoose.model('Ticket', ticketSchema);
